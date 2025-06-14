@@ -2,6 +2,7 @@ package com.sagapattern.orderservice.service.order;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sagapattern.common.enums.OrderStatus;
 import com.sagapattern.common.event.OrderCreatedEvent;
 import com.sagapattern.orderservice.entity.Order;
 import com.sagapattern.orderservice.entity.Outbox;
@@ -35,6 +36,12 @@ public class OrderService {
         order.setId(orderId);
         orderRepository.save(order);
         outboxRepository.save(convertToOutbox(order));
+    }
+
+    public void updateStatus(OrderStatus status, UUID orderId) throws Exception {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new Exception("Order Not Found"));
+        order.setStatus(status);
     }
 
     private Outbox convertToOutbox(Order order) throws JsonProcessingException {

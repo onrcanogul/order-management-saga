@@ -41,25 +41,27 @@ public class InboxProcessor {
     @Transactional
     public void processOrderCreatedEvent() {
         List<Inbox> inboxes =  inboxRepository.findByProcessedFalse();
+        inboxes.forEach(this::processInboxSafely);
+    }
 
-        inboxes.forEach(inbox -> {
-            try {
-                PaymentRequestCommand command = objectMapper.readValue(inbox.getPayload(), PaymentRequestCommand.class);
-                boolean success = paymentService.handlePayment();
-                if (success) {
-                    PaymentSucceededEvent paymentSucceededEvent = new PaymentSucceededEvent(UUID.randomUUID(), command.getOrderId());
-                    inbox.setProcessed(true);
-                    inboxRepository.save(inbox);
-                    outboxRepository.save(prepareOutbox(paymentSucceededEvent));
-                }
-                else {
-                    PaymentFailedEvent paymentFailedEvent = new PaymentFailedEvent(UUID.randomUUID(), command.getOrderId());
-                    outboxRepository.save(prepareOutbox(paymentFailedEvent));
-                }
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+    @Transactional
+    public void processInboxSafely(Inbox inbox) {
+        try {
+            PaymentRequestCommand command = objectMapper.readValue(inbox.getPayload(), PaymentRequestCommand.class);
+            boolean success = paymentService.handlePayment();
+            if (success) {
+                PaymentSucceededEvent paymentSucceededEvent = new PaymentSucceededEvent(UUID.randomUUID(), command.getOrderId());
+                inbox.setProcessed(true);
+                inboxRepository.save(inbox);
+                outboxRepository.save(prepareOutbox(paymentSucceededEvent));
             }
-        });
+            else {
+                PaymentFailedEvent paymentFailedEvent = new PaymentFailedEvent(UUID.randomUUID(), command.getOrderId());
+                outboxRepository.save(prepareOutbox(paymentFailedEvent));
+            }
+        } catch (JsonProcessingException e) {
+            log.error("Failed to process inbox with ID {}: {}", inbox.getIdempotentToken(), e.getMessage());
+        }
     }
 
     private Outbox prepareOutbox(Object event) {
