@@ -8,6 +8,7 @@ import com.sagapattern.common.constant.RabbitMQConstants;
 import com.sagapattern.paymentservice.entity.Inbox;
 import com.sagapattern.paymentservice.repository.InboxRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 
 @Component
 @Slf4j
+@RabbitListener(queues = RabbitMQConstants.PAYMENT_REQUEST_QUEUE)
 public class OrderEventConsumer {
 
     private final InboxRepository inboxRepository;
@@ -25,14 +27,12 @@ public class OrderEventConsumer {
         this.objectMapper = objectMapper;
     }
 
-    @RabbitListener(queues = RabbitMQConstants.PAYMENT_REQUEST_QUEUE)
-    public void receiveEvent(PaymentRequestCommand event) throws JsonProcessingException {
-
+    @RabbitHandler
+    public void handlePaymentRequestEvent(PaymentRequestCommand event) throws JsonProcessingException {
         if (inboxRepository.existsById(event.getIdempotentToken())) {
             log.info("Event already received. Skipping processing.");
             return;
         }
-
         inboxRepository.save(new Inbox(
                 event.getIdempotentToken(),
                 objectMapper.writeValueAsString(event),

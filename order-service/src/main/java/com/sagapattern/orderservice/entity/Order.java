@@ -19,5 +19,5 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
     private OrderStatus status;
-    private double totalPrice = orderItems.stream().mapToDouble(OrderItem::getPrice).sum();
+    private double totalPrice = orderItems != null ? orderItems.stream().mapToDouble(OrderItem::getPrice).sum() : 0;
 }

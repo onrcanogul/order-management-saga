@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: example_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - example-net
+
+  order-db:
+    image: postgres:latest
+    container_name: example_orderdb
+    restart: always
+    environment:
+      POSTGRES_DB: example_orderdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password12
+    ports:
+      - "5432:5432"
+    volumes:
+      - order-db-data:/var/lib/postgresql/data
+    networks:
+      - example-net
+
+  payment-db:
+    image: postgres:latest
+    container_name: example_paymentdb
+    restart: always
+    environment:
+      POSTGRES_DB: example_paymentdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password12
+    ports:
+      - "5433:5432"
+    volumes:
+      - payment-db-data:/var/lib/postgresql/data
+    networks:
+      - example-net
+
+volumes:
+  order-db-data:
+  payment-db-data:
+
+networks:
+  example-net:
+    driver: bridge

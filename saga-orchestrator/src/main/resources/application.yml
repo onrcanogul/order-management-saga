@@ -6,7 +6,10 @@ spring:
     password: guest
   application:
     name: saga-orchestrator
-
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 logging:
   level:
     root: info

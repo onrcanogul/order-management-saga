@@ -7,9 +7,9 @@ import com.sagapattern.common.enums.OrderStatus;
 import com.sagapattern.orderservice.entity.Inbox;
 import com.sagapattern.orderservice.repository.InboxRepository;
 import com.sagapattern.orderservice.service.order.OrderService;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;

@@ -8,8 +8,8 @@ import com.sagapattern.orderservice.entity.Order;
 import com.sagapattern.orderservice.entity.Outbox;
 import com.sagapattern.orderservice.repository.OrderRepository;
 import com.sagapattern.orderservice.repository.OutboxRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -32,6 +32,7 @@ public class OrderService {
 
     @Transactional
     public void createOrder(Order order) throws JsonProcessingException {
+        order.getOrderItems().forEach(oi -> oi.setId(UUID.randomUUID()));
         UUID orderId = UUID.randomUUID();
         order.setId(orderId);
         orderRepository.save(order);

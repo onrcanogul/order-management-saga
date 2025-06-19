@@ -56,11 +56,11 @@ public class RabbitMQConfig {
 
     @Bean
     public Binding paymentSuccessBinding() {
-        return BindingBuilder.bind(paymentQueue()).to(paymentExchange()).with(PAYMENT_REQUEST_ROUTING_KEY);
+        return BindingBuilder.bind(paymentQueue()).to(paymentExchange()).with(PAYMENT_SUCCESS_ROUTING_KEY);
     }
     @Bean
     public Binding paymentFailedBinding() {
-        return BindingBuilder.bind(paymentQueue()).to(paymentExchange()).with(PAYMENT_REQUEST_ROUTING_KEY);
+        return BindingBuilder.bind(paymentQueue()).to(paymentExchange()).with(PAYMENT_FAILED_ROUTING_KEY);
     }
 
 }

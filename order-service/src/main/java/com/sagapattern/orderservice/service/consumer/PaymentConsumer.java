@@ -8,6 +8,7 @@ import com.sagapattern.common.constant.RabbitMQConstants;
 import com.sagapattern.orderservice.entity.Inbox;
 import com.sagapattern.orderservice.repository.InboxRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -26,10 +27,12 @@ public class PaymentConsumer {
         this.objectMapper = objectMapper;
     }
 
+    @RabbitHandler
     public void handlePaymentSuccess(PaymentSucceededCommand command) throws JsonProcessingException {
         handlePaymentEvent(command, PaymentSucceededCommand.class, command.getIdempotentToken());
     }
 
+    @RabbitHandler
     public void handlePaymentFailed(PaymentFailedCommand command) throws JsonProcessingException {
         handlePaymentEvent(command, PaymentFailedCommand.class, command.getIdempotentToken());
     }
