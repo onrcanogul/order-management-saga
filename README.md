@@ -46,6 +46,8 @@ This project demonstrates a distributed microservices architecture for order and
 ### Saga Orchestrator Service
 
 - Listens to events and orchestrates the entire order-payment workflow using Saga Pattern.
+- Writes processed event records into Inbox to prevent duplicate processing.
+- Manages compensating actions if any service step fails.
 
 ---
 
