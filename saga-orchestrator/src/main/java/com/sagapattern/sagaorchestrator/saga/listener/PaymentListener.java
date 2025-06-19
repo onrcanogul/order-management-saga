@@ -19,7 +19,7 @@ public class PaymentListener {
         this.sagaManager = sagaManager;
     }
     @RabbitHandler
-    public void handlePaymentSucceededEvent(PaymentFailedEvent event) {
+    public void handlePaymentFailedEvent(PaymentFailedEvent event) {
         sagaManager.handlePaymentFailedEvent(event);
     }
     @RabbitHandler
