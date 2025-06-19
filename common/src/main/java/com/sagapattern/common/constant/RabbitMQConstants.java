@@ -1,6 +1,10 @@
 package com.sagapattern.common.constant;
 
 public class RabbitMQConstants {
+    public static final String DEAD_LETTER_QUEUE = "dead-letter-queue";
+    public static final String DEAD_LETTER_EXCHANGE = "dead-letter-exchange";
+    public static final String DEAD_LETTER_ROUTING_KEY = "dead-letter-routing-key";
+
     public static final String ORDER_QUEUE = "order-queue";
     public static final String ORDER_EXCHANGE = "order-exchange";
     public static final String ORDER_CREATED_ROUTING_KEY = "order.created";
